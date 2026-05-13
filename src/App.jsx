@@ -370,6 +370,16 @@ export default function App() {
         </div>
       )}
       {embedWidget&&(<EmbedModal widget={embedWidget} onClose={()=>setEmbedWidget(null)} />)}
+      <div style={{ marginLeft:220, padding:"32px 36px 48px", borderTop:"1px solid var(--border)", marginTop:40, display:"flex", justifyContent:"space-between", alignItems:"center", flexWrap:"wrap", gap:16 }}>
+  <div style={{ fontFamily:"var(--font-mono)", fontSize:12, color:"var(--muted)" }}>
+    © 2026 PricePulse · Urgency Pricing Platform · <a href="mailto:support@pricepulse.io" style={{ color:"var(--accent)", textDecoration:"none" }}>support@pricepulse.io</a>
+  </div>
+  <div style={{ display:"flex", gap:24, fontFamily:"var(--font-mono)", fontSize:12 }}>
+    <a href="#" onClick={e=>{e.preventDefault();alert("Refund Policy: All plans include a 7-day money-back guarantee. Contact support@pricepulse.io to request a refund.");}} style={{ color:"var(--muted)", textDecoration:"none", cursor:"pointer" }}>Refund Policy</a>
+    <a href="#" onClick={e=>{e.preventDefault();alert("Cancellation Policy: Cancel anytime from your account settings. No further charges after cancellation.");}} style={{ color:"var(--muted)", textDecoration:"none", cursor:"pointer" }}>Cancellation Policy</a>
+    <a href="#" onClick={e=>{e.preventDefault();alert("Contact: support@pricepulse.io — We respond within 24 hours.");}} style={{ color:"var(--muted)", textDecoration:"none", cursor:"pointer" }}>Contact</a>
+  </div>
+</div>
     </>
   );
 }
