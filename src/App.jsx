@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useCallback } from "react";
 
 const FontLoader = () => (
   <style>{`
@@ -8,25 +8,25 @@ const FontLoader = () => (
 
 const GLOBAL_CSS = `
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  body { background: #080b10; }
+  body { background: #0d0814; }
   :root {
-    --bg: #080b10; --surface: #0e1219; --surface2: #141820;
-    --border: #1e2533; --accent: #f0c040; --accent2: #ff5e3a;
-    --green: #2ecc71; --text: #e8eaf0; --muted: #606880;
+    --bg: #0d0814; --surface: #130d1e; --surface2: #1a1228;
+    --border: #2a1f40; --accent: #7c3aed; --accent2: #a78bfa;
+    --green: #2ecc71; --text: #f0e8ff; --muted: #7050a0;
     --font-head: 'Syne', sans-serif; --font-mono: 'DM Mono', monospace;
   }
   @keyframes ticker { 0%{transform:translateY(0);opacity:1} 40%{transform:translateY(-6px);opacity:0} 60%{transform:translateY(6px);opacity:0} 100%{transform:translateY(0);opacity:1} }
-  @keyframes pulse-ring { 0%{box-shadow:0 0 0 0 rgba(240,192,64,.4)} 70%{box-shadow:0 0 0 14px rgba(240,192,64,0)} 100%{box-shadow:0 0 0 0 rgba(240,192,64,0)} }
+  @keyframes pulse-ring { 0%{box-shadow:0 0 0 0 rgba(124,58,237,.4)} 70%{box-shadow:0 0 0 14px rgba(124,58,237,0)} 100%{box-shadow:0 0 0 0 rgba(124,58,237,0)} }
   @keyframes fade-in { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:translateY(0)} }
   @keyframes slide-up { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
   .fade-in { animation: fade-in .5s ease forwards; }
   .slide-up { animation: slide-up .4s ease forwards; }
   .card { background:var(--surface); border:1px solid var(--border); border-radius:16px; padding:24px; }
   .btn { display:inline-flex; align-items:center; gap:8px; font-family:var(--font-head); font-weight:700; font-size:14px; border-radius:10px; border:none; cursor:pointer; padding:10px 20px; transition:all .2s; }
-  .btn-primary { background:var(--accent); color:#000; }
-  .btn-primary:hover { background:#ffd060; transform:translateY(-1px); }
+  .btn-primary { background:var(--accent); color:#fff; }
+  .btn-primary:hover { background:#6d28d9; transform:translateY(-1px); }
   .btn-ghost { background:var(--surface2); color:var(--text); border:1px solid var(--border); }
-  .btn-ghost:hover { border-color:var(--accent); color:var(--accent); }
+  .btn-ghost:hover { border-color:var(--accent2); color:var(--accent2); }
   input,select,textarea { background:var(--surface2); border:1px solid var(--border); color:var(--text); font-family:var(--font-mono); font-size:14px; border-radius:8px; padding:10px 14px; width:100%; outline:none; transition:border-color .2s; }
   input:focus,select:focus,textarea:focus { border-color:var(--accent); }
   label { font-family:var(--font-head); font-size:12px; color:var(--muted); text-transform:uppercase; letter-spacing:.08em; margin-bottom:6px; display:block; }
@@ -66,32 +66,32 @@ function WidgetPreview({ config, ticking }) {
     setPrevPrice(price);
   }, [price]);
 
-  const urgencyColor = pct>0.8?"#ff3b30":pct>0.5?"#ff9f0a":"#2ecc71";
-  const barColor = pct>0.8?"linear-gradient(90deg,#ff9f0a,#ff3b30)":pct>0.5?"linear-gradient(90deg,#f0c040,#ff9f0a)":"linear-gradient(90deg,#2ecc71,#a8e063)";
+  const urgencyColor = pct>0.8?"#e879f9":pct>0.5?"#a78bfa":"#7c3aed";
+  const barColor = pct>0.8?"linear-gradient(90deg,#a78bfa,#e879f9)":pct>0.5?"linear-gradient(90deg,#7c3aed,#a78bfa)":"linear-gradient(90deg,#5b21b6,#7c3aed)";
 
   return (
-    <div style={{ background:config.darkMode?"#111418":"#ffffff", border:`2px solid ${urgencyColor}`, borderRadius:18, padding:28, maxWidth:340, fontFamily:"'Syne', sans-serif", boxShadow:`0 0 32px ${urgencyColor}33`, transition:"border-color .4s, box-shadow .4s" }}>
-      <div style={{ fontSize:13, textTransform:"uppercase", letterSpacing:".1em", color:config.darkMode?"#606880":"#999", marginBottom:4 }}>{config.category}</div>
-      <div style={{ fontSize:20, fontWeight:800, color:config.darkMode?"#e8eaf0":"#111", marginBottom:20 }}>{config.productName}</div>
+    <div style={{ background:config.darkMode?"#130d1e":"#ffffff", border:`2px solid ${urgencyColor}`, borderRadius:18, padding:28, maxWidth:340, fontFamily:"'Syne', sans-serif", boxShadow:`0 0 32px ${urgencyColor}33`, transition:"border-color .4s, box-shadow .4s" }}>
+      <div style={{ fontSize:13, textTransform:"uppercase", letterSpacing:".1em", color:config.darkMode?"#7050a0":"#999", marginBottom:4 }}>{config.category}</div>
+      <div style={{ fontSize:20, fontWeight:800, color:config.darkMode?"#f0e8ff":"#111", marginBottom:20 }}>{config.productName}</div>
       <div style={{ display:"flex", alignItems:"flex-end", gap:10, marginBottom:16 }}>
         <div style={{ fontSize:42, fontWeight:800, lineHeight:1, color:urgencyColor, animation:flip?"ticker .6s ease":"none", fontFamily:"'DM Mono', monospace", letterSpacing:"-.02em" }}>{fmt(price)}</div>
-        <div style={{ fontSize:14, color:config.darkMode?"#606880":"#aaa", marginBottom:6, textDecoration:"line-through" }}>{fmt(config.maxPrice)}</div>
+        <div style={{ fontSize:14, color:config.darkMode?"#7050a0":"#aaa", marginBottom:6, textDecoration:"line-through" }}>{fmt(config.maxPrice)}</div>
       </div>
-      <div style={{ background:config.darkMode?"#1e2533":"#f0f0f0", borderRadius:6, height:8, marginBottom:18, overflow:"hidden" }}>
+      <div style={{ background:config.darkMode?"#2a1f40":"#f0f0f0", borderRadius:6, height:8, marginBottom:18, overflow:"hidden" }}>
         <div style={{ width:`${pct*100}%`, height:"100%", background:barColor, borderRadius:6, transition:"width 1s linear, background .4s" }} />
       </div>
       <div style={{ display:"flex", justifyContent:"space-between", marginBottom:22 }}>
         <div>
-          <div style={{ fontSize:11, color:config.darkMode?"#606880":"#aaa", textTransform:"uppercase", letterSpacing:".08em" }}>Price locks in</div>
+          <div style={{ fontSize:11, color:config.darkMode?"#7050a0":"#aaa", textTransform:"uppercase", letterSpacing:".08em" }}>Price locks in</div>
           <div style={{ fontSize:18, fontWeight:700, color:urgencyColor, fontFamily:"'DM Mono', monospace" }}>{secsLeft>0?fmtTime(secsLeft):"EXPIRED"}</div>
         </div>
         <div style={{ textAlign:"right" }}>
-          <div style={{ fontSize:11, color:config.darkMode?"#606880":"#aaa", textTransform:"uppercase", letterSpacing:".08em" }}>Price rise</div>
-          <div style={{ fontSize:18, fontWeight:700, color:"#ff5e3a", fontFamily:"'DM Mono', monospace" }}>+{fmt(config.maxPrice-config.basePrice)}</div>
+          <div style={{ fontSize:11, color:config.darkMode?"#7050a0":"#aaa", textTransform:"uppercase", letterSpacing:".08em" }}>Price rise</div>
+          <div style={{ fontSize:18, fontWeight:700, color:"#a78bfa", fontFamily:"'DM Mono', monospace" }}>+{fmt(config.maxPrice-config.basePrice)}</div>
         </div>
       </div>
-      <button style={{ width:"100%", padding:"14px 0", background:urgencyColor, color:pct>0.5?"#fff":"#000", border:"none", borderRadius:12, fontSize:16, fontWeight:800, fontFamily:"'Syne', sans-serif", cursor:"pointer", animation:pct>0.75?"pulse-ring 1.5s ease-in-out infinite":"none", transition:"background .4s" }}>{config.ctaText} {fmt(price)}</button>
-      <div style={{ marginTop:12, fontSize:11, textAlign:"center", color:config.darkMode?"#3a4050":"#ccc", fontFamily:"'DM Mono', monospace" }}>Price increases every second until deadline</div>
+      <button style={{ width:"100%", padding:"14px 0", background:urgencyColor, color:"#fff", border:"none", borderRadius:12, fontSize:16, fontWeight:800, fontFamily:"'Syne', sans-serif", cursor:"pointer", animation:pct>0.75?"pulse-ring 1.5s ease-in-out infinite":"none", transition:"background .4s" }}>{config.ctaText} {fmt(price)}</button>
+      <div style={{ marginTop:12, fontSize:11, textAlign:"center", color:config.darkMode?"#3a2a50":"#ccc", fontFamily:"'DM Mono', monospace" }}>Price increases every second until deadline</div>
     </div>
   );
 }
@@ -104,8 +104,8 @@ function AnalyticsPanel({ widgets }) {
     <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr 1fr", gap:16 }}>
       {[
         { label:"Total Revenue", value:fmt(totalRev), sub:"Connect Stripe to track", color:"#2ecc71" },
-        { label:"Conversions", value:totalConv, sub:"Sales tracked here", color:"#f0c040" },
-        { label:"Active Widgets", value:activeWidgets, sub:"Live right now", color:"#ff5e3a" },
+        { label:"Conversions", value:totalConv, sub:"Sales tracked here", color:"#a78bfa" },
+        { label:"Active Widgets", value:activeWidgets, sub:"Live right now", color:"#e879f9" },
       ].map((s) => (
         <div key={s.label} className="card" style={{ padding:20 }}>
           <div style={{ fontSize:11, color:"var(--muted)", textTransform:"uppercase", letterSpacing:".08em", marginBottom:8, fontFamily:"var(--font-head)" }}>{s.label}</div>
@@ -118,10 +118,10 @@ function AnalyticsPanel({ widgets }) {
 }
 
 function WidgetRow({ w, onEdit, onDelete, onPreview }) {
-  const urgencyColor = w.urgency>80?"#ff3b30":w.urgency>50?"#ff9f0a":"#2ecc71";
+  const urgencyColor = w.urgency>80?"#e879f9":w.urgency>50?"#a78bfa":"#7c3aed";
   return (
-    <div className="card" style={{ display:"flex", alignItems:"center", gap:16, padding:"16px 20px", cursor:"pointer", transition:"border-color .2s" }}
-      onMouseEnter={e=>e.currentTarget.style.borderColor="#2a3040"}
+    <div className="card" style={{ display:"flex", alignItems:"center", gap:16, padding:"16px 20px", transition:"border-color .2s" }}
+      onMouseEnter={e=>e.currentTarget.style.borderColor="#3a2a50"}
       onMouseLeave={e=>e.currentTarget.style.borderColor="var(--border)"}>
       <div style={{ width:10, height:10, borderRadius:"50%", background:urgencyColor, flexShrink:0, animation:w.live?"pulse-ring 2s infinite":"none" }} />
       <div style={{ flex:1 }}>
@@ -129,13 +129,13 @@ function WidgetRow({ w, onEdit, onDelete, onPreview }) {
         <div style={{ fontFamily:"var(--font-mono)", fontSize:12, color:"var(--muted)", marginTop:2 }}>{fmt(w.config.basePrice)} → {fmt(w.config.maxPrice)} · {w.config.category}</div>
       </div>
       <div style={{ textAlign:"right", minWidth:90 }}>
-        <div style={{ fontFamily:"var(--font-mono)", fontSize:16, fontWeight:500, color:"var(--accent)" }}>{fmt(w.revenue)}</div>
+        <div style={{ fontFamily:"var(--font-mono)", fontSize:16, fontWeight:500, color:"var(--accent2)" }}>{fmt(w.revenue)}</div>
         <div style={{ fontSize:11, color:"var(--muted)", fontFamily:"var(--font-mono)" }}>{w.conversions} sales</div>
       </div>
       <div style={{ display:"flex", gap:8 }}>
         <button className="btn btn-ghost" style={{ padding:"6px 12px", fontSize:12 }} onClick={()=>onPreview(w)}>Preview</button>
         <button className="btn btn-ghost" style={{ padding:"6px 12px", fontSize:12 }} onClick={()=>onEdit(w)}>Edit</button>
-        <button className="btn" style={{ padding:"6px 12px", fontSize:12, background:"transparent", color:"#ff3b30", border:"1px solid #ff3b3033" }} onClick={()=>onDelete(w.id)}>✕</button>
+        <button className="btn" style={{ padding:"6px 12px", fontSize:12, background:"transparent", color:"#e879f9", border:"1px solid #e879f933" }} onClick={()=>onDelete(w.id)}>✕</button>
       </div>
     </div>
   );
@@ -187,7 +187,7 @@ function BuilderModal({ initial, onSave, onClose }) {
           <div style={{ padding:28, display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", gap:16 }}>
             <div style={{ fontSize:11, color:"var(--muted)", textTransform:"uppercase", letterSpacing:".1em", fontFamily:"var(--font-head)" }}>Live Preview</div>
             <WidgetPreview config={cfg} ticking={ticking} />
-            <div style={{ fontSize:11, color:"var(--muted)", fontFamily:"var(--font-mono)", textAlign:"center" }}>Click ▶ Simulate to watch price rise in real-time</div>
+            <div style={{ fontSize:11, color:"var(--muted)", fontFamily:"var(--font-mono)", textAlign:"center" }}>Click ▶ Simulate to watch price rise</div>
           </div>
         </div>
       </div>
@@ -203,8 +203,8 @@ function EmbedModal({ widget, onClose }) {
     <div style={{ position:"fixed", inset:0, background:"rgba(0,0,0,.85)", backdropFilter:"blur(8px)", zIndex:100, display:"flex", alignItems:"center", justifyContent:"center" }}>
       <div className="card fade-in" style={{ width:"min(92vw, 540px)", padding:28 }}>
         <div style={{ fontFamily:"var(--font-head)", fontWeight:800, fontSize:18, color:"var(--text)", marginBottom:8 }}>Embed Code</div>
-        <div style={{ color:"var(--muted)", fontSize:13, marginBottom:20, fontFamily:"var(--font-mono)" }}>Paste this into your website, Shopify store, or landing page.</div>
-        <div style={{ background:"#0a0d12", border:"1px solid var(--border)", borderRadius:10, padding:16, fontFamily:"var(--font-mono)", fontSize:13, color:"#a8e063", whiteSpace:"pre-wrap", lineHeight:1.7, marginBottom:16 }}>{code}</div>
+        <div style={{ color:"var(--muted)", fontSize:13, marginBottom:20, fontFamily:"var(--font-mono)" }}>Paste into your website, Shopify store, or landing page.</div>
+        <div style={{ background:"#0a0814", border:"1px solid var(--border)", borderRadius:10, padding:16, fontFamily:"var(--font-mono)", fontSize:13, color:"#a78bfa", whiteSpace:"pre-wrap", lineHeight:1.7, marginBottom:16 }}>{code}</div>
         <div style={{ display:"flex", gap:12 }}>
           <button className="btn btn-primary" onClick={copy}>{copied?"✓ Copied!":"Copy Code"}</button>
           <button className="btn btn-ghost" onClick={onClose}>Close</button>
@@ -244,12 +244,12 @@ export default function App() {
         <div style={{ position:"fixed", left:0, top:0, bottom:0, width:220, background:"var(--surface)", borderRight:"1px solid var(--border)", display:"flex", flexDirection:"column", padding:"24px 0", zIndex:10 }}>
           <div style={{ padding:"0 24px 28px" }}>
             <div style={{ fontSize:22, fontWeight:800, letterSpacing:"-.02em" }}>
-              <span style={{ color:"var(--accent)" }}>Price</span><span style={{ color:"var(--accent2)" }}>Pulse</span>
+              <span style={{ color:"var(--accent2)" }}>Price</span><span style={{ color:"#e879f9" }}>Pulse</span>
             </div>
             <div style={{ fontSize:11, color:"var(--muted)", marginTop:2, fontFamily:"var(--font-mono)" }}>Urgency Pricing Platform</div>
           </div>
           {[{ id:"dashboard",icon:"⬡",label:"Dashboard" },{ id:"widgets",icon:"◈",label:"My Widgets" },{ id:"analytics",icon:"◎",label:"Analytics" },{ id:"pricing",icon:"◆",label:"Plans" }].map(({id,icon,label})=>(
-            <button key={id} onClick={()=>setTab(id)} style={{ display:"flex", alignItems:"center", gap:12, padding:"12px 24px", background:"none", border:"none", cursor:"pointer", textAlign:"left", width:"100%", color:tab===id?"var(--accent)":"var(--muted)", fontFamily:"var(--font-head)", fontWeight:600, fontSize:14, borderLeft:tab===id?"3px solid var(--accent)":"3px solid transparent", transition:"all .15s" }}>
+            <button key={id} onClick={()=>setTab(id)} style={{ display:"flex", alignItems:"center", gap:12, padding:"12px 24px", background:"none", border:"none", cursor:"pointer", textAlign:"left", width:"100%", color:tab===id?"var(--accent2)":"var(--muted)", fontFamily:"var(--font-head)", fontWeight:600, fontSize:14, borderLeft:tab===id?"3px solid var(--accent2)":"3px solid transparent", transition:"all .15s" }}>
               <span style={{ fontSize:16 }}>{icon}</span> {label}
             </button>
           ))}
@@ -273,7 +273,7 @@ export default function App() {
                   <div style={{ fontSize:40, marginBottom:16 }}>🚀</div>
                   <div style={{ fontWeight:800, fontSize:22, marginBottom:10 }}>You're live — now get your first customer</div>
                   <div style={{ color:"var(--muted)", fontFamily:"var(--font-mono)", fontSize:14, marginBottom:28, maxWidth:480, margin:"0 auto 28px" }}>
-                    Create your first widget, share the preview link, and watch your first sale come in. Real revenue shows up here automatically.
+                    Create your first widget, share the preview link, and watch your first sale come in.
                   </div>
                   <button className="btn btn-primary" style={{ fontSize:16, padding:"14px 32px" }} onClick={()=>{ setTab("widgets"); setShowBuilder(true); }}>
                     + Create Your First Widget
@@ -287,7 +287,7 @@ export default function App() {
                   </div>
                   <div className="card">
                     <div style={{ fontWeight:700, fontSize:15, marginBottom:16 }}>💡 Revenue Tips</div>
-                    {[{ tip:"Short windows (1–6h) increase urgency conversion by ~3×",color:"#f0c040" },{ tip:"Price gap of 2–3× base converts best for events",color:"#2ecc71" },{ tip:"Embed on checkout page, not product page, for +40% lift",color:"#ff9f0a" },{ tip:"Dark mode widgets outperform light on dark landing pages",color:"#a78bfa" }].map((t,i)=>(
+                    {[{ tip:"Short windows (1–6h) increase urgency conversion by ~3×",color:"#a78bfa" },{ tip:"Price gap of 2–3× base converts best for events",color:"#2ecc71" },{ tip:"Embed on checkout page, not product page, for +40% lift",color:"#e879f9" },{ tip:"Dark mode widgets outperform light on dark landing pages",color:"#7c3aed" }].map((t,i)=>(
                       <div key={i} style={{ display:"flex", gap:10, padding:"8px 0", borderBottom:i<3?"1px solid var(--border)":"none" }}>
                         <div style={{ width:4, borderRadius:2, background:t.color, flexShrink:0 }} />
                         <div style={{ fontSize:13, color:"var(--muted)", lineHeight:1.5, fontFamily:"var(--font-mono)" }}>{t.tip}</div>
@@ -319,13 +319,13 @@ export default function App() {
               <div className="card">
                 <div style={{ fontWeight:700, fontSize:15, marginBottom:20 }}>Revenue by Widget</div>
                 {widgets.length===0?(
-                  <div style={{ color:"var(--muted)", fontFamily:"var(--font-mono)", fontSize:13, textAlign:"center", padding:"24px 0" }}>No data yet — create a widget to start tracking revenue.</div>
+                  <div style={{ color:"var(--muted)", fontFamily:"var(--font-mono)", fontSize:13, textAlign:"center", padding:"24px 0" }}>No data yet — create a widget to start tracking.</div>
                 ):(
                   widgets.map(w=>{ const maxRev=Math.max(...widgets.map(x=>x.revenue),1); const pct=(w.revenue/maxRev)*100; return (
                     <div key={w.id} style={{ marginBottom:16 }}>
                       <div style={{ display:"flex", justifyContent:"space-between", marginBottom:6, fontSize:13 }}>
                         <span style={{ fontFamily:"var(--font-head)", fontWeight:600 }}>{w.config.productName}</span>
-                        <span style={{ fontFamily:"var(--font-mono)", color:"var(--accent)" }}>{fmt(w.revenue)}</span>
+                        <span style={{ fontFamily:"var(--font-mono)", color:"var(--accent2)" }}>{fmt(w.revenue)}</span>
                       </div>
                       <div style={{ background:"var(--border)", borderRadius:4, height:8 }}>
                         <div style={{ width:`${pct}%`, height:"100%", borderRadius:4, background:"linear-gradient(90deg,var(--accent),var(--accent2))", transition:"width .6s ease" }} />
@@ -340,22 +340,33 @@ export default function App() {
           {tab==="pricing" && (
             <div className="fade-in" style={{ display:"grid", gridTemplateColumns:"1fr 1fr 1fr", gap:20 }}>
               {[
-                { name:"Starter",price:"$29/mo",color:"#606880",features:["3 active widgets","Basic analytics","Email support","Embed on 1 domain"],cta:"Start Free Trial", link:"#" },
-                { name:"Growth",price:"$79/mo",color:"var(--accent)",highlight:true,features:["Unlimited widgets","Advanced analytics","A/B testing","5 domains","Priority support"],cta:"Get Growth", link:"#" },
-                { name:"Agency",price:"$199/mo",color:"var(--accent2)",features:["Everything in Growth","White-label widgets","API access","Unlimited domains","Custom branding"],cta:"Contact Sales", link:"#" }
+                { name:"Starter",price:"$29/mo",color:"#7050a0",features:["3 active widgets","Basic analytics","Email support","Embed on 1 domain"],cta:"Start Free Trial",link:"#" },
+                { name:"Growth",price:"$79/mo",color:"var(--accent2)",highlight:true,features:["Unlimited widgets","Advanced analytics","A/B testing","5 domains","Priority support"],cta:"Get Growth",link:"#" },
+                { name:"Agency",price:"$199/mo",color:"#e879f9",features:["Everything in Growth","White-label widgets","API access","Unlimited domains","Custom branding"],cta:"Contact Sales",link:"#" }
               ].map(p=>(
-                <div key={p.name} className="card" style={{ border:p.highlight?`2px solid var(--accent)`:"1px solid var(--border)", position:"relative", padding:28 }}>
-                  {p.highlight&&(<div style={{ position:"absolute", top:-12, left:"50%", transform:"translateX(-50%)", background:"var(--accent)", color:"#000", fontWeight:800, fontSize:11, padding:"3px 14px", borderRadius:20, whiteSpace:"nowrap", fontFamily:"var(--font-head)", textTransform:"uppercase" }}>Most Popular</div>)}
+                <div key={p.name} className="card" style={{ border:p.highlight?`2px solid var(--accent2)`:"1px solid var(--border)", position:"relative", padding:28 }}>
+                  {p.highlight&&(<div style={{ position:"absolute", top:-12, left:"50%", transform:"translateX(-50%)", background:"var(--accent2)", color:"#000", fontWeight:800, fontSize:11, padding:"3px 14px", borderRadius:20, whiteSpace:"nowrap", fontFamily:"var(--font-head)", textTransform:"uppercase" }}>Most Popular</div>)}
                   <div style={{ fontWeight:800, fontSize:18, color:p.color, marginBottom:4 }}>{p.name}</div>
                   <div style={{ fontSize:30, fontWeight:800, marginBottom:20, fontFamily:"var(--font-mono)" }}>{p.price}</div>
                   {p.features.map(f=>(<div key={f} style={{ display:"flex", gap:8, alignItems:"flex-start", marginBottom:10, fontSize:13, color:"var(--muted)", fontFamily:"var(--font-mono)" }}><span style={{ color:p.color }}>✓</span> {f}</div>))}
                   <a href={p.link} style={{ textDecoration:"none" }}>
-                    <button className="btn btn-primary" style={{ width:"100%", justifyContent:"center", marginTop:20, background:p.color==="var(--accent)"?"var(--accent)":"var(--surface2)", color:p.color==="var(--accent)"?"#000":"var(--text)", border:`1px solid ${p.color}` }}>{p.cta}</button>
+                    <button className="btn btn-primary" style={{ width:"100%", justifyContent:"center", marginTop:20 }}>{p.cta}</button>
                   </a>
                 </div>
               ))}
             </div>
           )}
+        </div>
+
+        <div style={{ marginLeft:220, padding:"32px 36px 48px", borderTop:"1px solid var(--border)", marginTop:40, display:"flex", justifyContent:"space-between", alignItems:"center", flexWrap:"wrap", gap:16 }}>
+          <div style={{ fontFamily:"var(--font-mono)", fontSize:12, color:"var(--muted)" }}>
+            © 2026 PricePulse · <a href="mailto:support@pricepulse.io" style={{ color:"var(--accent2)", textDecoration:"none" }}>support@pricepulse.io</a>
+          </div>
+          <div style={{ display:"flex", gap:24, fontFamily:"var(--font-mono)", fontSize:12 }}>
+            <a href="#" onClick={e=>{e.preventDefault();alert("Refund Policy: All plans include a 7-day money-back guarantee. Contact support@pricepulse.io to request a refund.");}} style={{ color:"var(--muted)", textDecoration:"none", cursor:"pointer" }}>Refund Policy</a>
+            <a href="#" onClick={e=>{e.preventDefault();alert("Cancellation Policy: Cancel anytime. No further charges after cancellation.");}} style={{ color:"var(--muted)", textDecoration:"none", cursor:"pointer" }}>Cancellation Policy</a>
+            <a href="#" onClick={e=>{e.preventDefault();alert("Contact: support@pricepulse.io — We respond within 24 hours.");}} style={{ color:"var(--muted)", textDecoration:"none", cursor:"pointer" }}>Contact</a>
+          </div>
         </div>
       </div>
 
@@ -370,16 +381,6 @@ export default function App() {
         </div>
       )}
       {embedWidget&&(<EmbedModal widget={embedWidget} onClose={()=>setEmbedWidget(null)} />)}
-      <div style={{ marginLeft:220, padding:"32px 36px 48px", borderTop:"1px solid var(--border)", marginTop:40, display:"flex", justifyContent:"space-between", alignItems:"center", flexWrap:"wrap", gap:16 }}>
-  <div style={{ fontFamily:"var(--font-mono)", fontSize:12, color:"var(--muted)" }}>
-    © 2026 PricePulse · Urgency Pricing Platform · <a href="mailto:support@pricepulse.io" style={{ color:"var(--accent)", textDecoration:"none" }}>support@pricepulse.io</a>
-  </div>
-  <div style={{ display:"flex", gap:24, fontFamily:"var(--font-mono)", fontSize:12 }}>
-    <a href="#" onClick={e=>{e.preventDefault();alert("Refund Policy: All plans include a 7-day money-back guarantee. Contact support@pricepulse.io to request a refund.");}} style={{ color:"var(--muted)", textDecoration:"none", cursor:"pointer" }}>Refund Policy</a>
-    <a href="#" onClick={e=>{e.preventDefault();alert("Cancellation Policy: Cancel anytime from your account settings. No further charges after cancellation.");}} style={{ color:"var(--muted)", textDecoration:"none", cursor:"pointer" }}>Cancellation Policy</a>
-    <a href="#" onClick={e=>{e.preventDefault();alert("Contact: support@pricepulse.io — We respond within 24 hours.");}} style={{ color:"var(--muted)", textDecoration:"none", cursor:"pointer" }}>Contact</a>
-  </div>
-</div>
     </>
   );
 }
