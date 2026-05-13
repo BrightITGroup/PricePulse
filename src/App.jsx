@@ -83,7 +83,7 @@ function WidgetPreview({ config, ticking }) {
       <div style={{ display:"flex", justifyContent:"space-between", marginBottom:22 }}>
         <div>
           <div style={{ fontSize:11, color:config.darkMode?"#606880":"#aaa", textTransform:"uppercase", letterSpacing:".08em" }}>Price locks in</div>
-          <div style={{ fontSize:18, fontWeight:700, color:urgencyColor, fontFamily:"'DM Mono', monospace" }}>{secsLeft>0?fmtTime(secsLeft):"SOLD OUT"}</div>
+          <div style={{ fontSize:18, fontWeight:700, color:urgencyColor, fontFamily:"'DM Mono', monospace" }}>{secsLeft>0?fmtTime(secsLeft):"EXPIRED"}</div>
         </div>
         <div style={{ textAlign:"right" }}>
           <div style={{ fontSize:11, color:config.darkMode?"#606880":"#aaa", textTransform:"uppercase", letterSpacing:".08em" }}>Price rise</div>
@@ -99,18 +99,18 @@ function WidgetPreview({ config, ticking }) {
 function AnalyticsPanel({ widgets }) {
   const totalRev = widgets.reduce((a,w) => a+w.revenue, 0);
   const totalConv = widgets.reduce((a,w) => a+w.conversions, 0);
-  const avgUrgency = widgets.length?(widgets.reduce((a,w) => a+w.urgency,0)/widgets.length).toFixed(0):0;
+  const activeWidgets = widgets.filter(w=>w.live).length;
   return (
     <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr 1fr", gap:16 }}>
       {[
-        { label:"Total Revenue", value:fmt(totalRev), delta:"+12.4%", color:"#2ecc71" },
-        { label:"Conversions", value:totalConv, delta:"+8.1%", color:"#f0c040" },
-        { label:"Avg. Urgency %", value:`${avgUrgency}%`, delta:"live", color:"#ff5e3a" },
+        { label:"Total Revenue", value:fmt(totalRev), sub:"Connect Stripe to track", color:"#2ecc71" },
+        { label:"Conversions", value:totalConv, sub:"Sales tracked here", color:"#f0c040" },
+        { label:"Active Widgets", value:activeWidgets, sub:"Live right now", color:"#ff5e3a" },
       ].map((s) => (
         <div key={s.label} className="card" style={{ padding:20 }}>
           <div style={{ fontSize:11, color:"var(--muted)", textTransform:"uppercase", letterSpacing:".08em", marginBottom:8, fontFamily:"var(--font-head)" }}>{s.label}</div>
           <div style={{ fontSize:28, fontWeight:800, color:s.color, fontFamily:"var(--font-mono)" }}>{s.value}</div>
-          <div style={{ fontSize:12, color:s.color, marginTop:4, fontFamily:"var(--font-mono)" }}>{s.delta}</div>
+          <div style={{ fontSize:12, color:"var(--muted)", marginTop:4, fontFamily:"var(--font-mono)" }}>{s.sub}</div>
         </div>
       ))}
     </div>
@@ -214,20 +214,14 @@ function EmbedModal({ widget, onClose }) {
   );
 }
 
-const DEMO_WIDGETS = [
-  { id:"w1", live:true, revenue:3482, conversions:47, urgency:72, config:{ productName:"Front-Row Seats — Summer Fest", category:"Event", basePrice:49, maxPrice:149, durationSecs:7200, ctaText:"Grab Seats for", darkMode:true } },
-  { id:"w2", live:true, revenue:1290, conversions:18, urgency:35, config:{ productName:"Brand Strategy Session", category:"Consultation", basePrice:199, maxPrice:499, durationSecs:86400, ctaText:"Book for only", darkMode:true } },
-  { id:"w3", live:false, revenue:5710, conversions:89, urgency:0, config:{ productName:"React Mastery Course", category:"Course", basePrice:29, maxPrice:199, durationSecs:604800, ctaText:"Enroll Now for", darkMode:false } },
-];
-
 export default function App() {
-  const [widgets, setWidgets] = useState(DEMO_WIDGETS);
+  const [widgets, setWidgets] = useState([]);
   const [tab, setTab] = useState("dashboard");
   const [showBuilder, setShowBuilder] = useState(false);
   const [editWidget, setEditWidget] = useState(null);
   const [previewWidget, setPreviewWidget] = useState(null);
   const [embedWidget, setEmbedWidget] = useState(null);
-  const [nextId, setNextId] = useState(4);
+  const [nextId, setNextId] = useState(1);
 
   const saveWidget = useCallback((cfg) => {
     if (editWidget) {
@@ -274,32 +268,47 @@ export default function App() {
           {tab==="dashboard" && (
             <div className="fade-in" style={{ display:"grid", gap:24 }}>
               <AnalyticsPanel widgets={widgets} />
-              <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:24 }}>
-                <div className="card">
-                  <div style={{ fontWeight:700, fontSize:15, marginBottom:16 }}>Recent Sales</div>
-                  {[{ item:"Front-Row Seats",price:"$89.40",time:"2 min ago",gain:"+$40" },{ item:"Brand Strategy",price:"$310.00",time:"14 min ago",gain:"+$111" },{ item:"React Course",price:"$199.00",time:"1 hr ago",gain:"+$170" },{ item:"Front-Row Seats",price:"$72.10",time:"2 hr ago",gain:"+$23" }].map((s,i)=>(
-                    <div key={i} style={{ display:"flex", justifyContent:"space-between", alignItems:"center", padding:"10px 0", borderBottom:i<3?"1px solid var(--border)":"none" }}>
-                      <div><div style={{ fontSize:14, fontWeight:600 }}>{s.item}</div><div style={{ fontSize:11, color:"var(--muted)", fontFamily:"var(--font-mono)" }}>{s.time}</div></div>
-                      <div style={{ textAlign:"right" }}><div style={{ fontFamily:"var(--font-mono)", fontSize:14, color:"var(--text)" }}>{s.price}</div><div style={{ fontSize:11, color:"#2ecc71", fontFamily:"var(--font-mono)" }}>{s.gain} vs base</div></div>
-                    </div>
-                  ))}
+              {widgets.length===0?(
+                <div className="card" style={{ textAlign:"center", padding:60 }}>
+                  <div style={{ fontSize:40, marginBottom:16 }}>🚀</div>
+                  <div style={{ fontWeight:800, fontSize:22, marginBottom:10 }}>You're live — now get your first customer</div>
+                  <div style={{ color:"var(--muted)", fontFamily:"var(--font-mono)", fontSize:14, marginBottom:28, maxWidth:480, margin:"0 auto 28px" }}>
+                    Create your first widget, share the preview link, and watch your first sale come in. Real revenue shows up here automatically.
+                  </div>
+                  <button className="btn btn-primary" style={{ fontSize:16, padding:"14px 32px" }} onClick={()=>{ setTab("widgets"); setShowBuilder(true); }}>
+                    + Create Your First Widget
+                  </button>
                 </div>
-                <div className="card" style={{ background:"linear-gradient(135deg,#0e1219,#141820)" }}>
-                  <div style={{ fontWeight:700, fontSize:15, marginBottom:16 }}>💡 Revenue Tips</div>
-                  {[{ tip:"Short windows (1–6h) increase urgency conversion by ~3×",color:"#f0c040" },{ tip:"Price gap of 2–3× base converts best for events",color:"#2ecc71" },{ tip:"Embed on checkout page, not product page, for +40% lift",color:"#ff9f0a" },{ tip:"Dark mode widgets outperform light on dark landing pages",color:"#a78bfa" }].map((t,i)=>(
-                    <div key={i} style={{ display:"flex", gap:10, padding:"8px 0", borderBottom:i<3?"1px solid var(--border)":"none" }}>
-                      <div style={{ width:4, borderRadius:2, background:t.color, flexShrink:0 }} />
-                      <div style={{ fontSize:13, color:"var(--muted)", lineHeight:1.5, fontFamily:"var(--font-mono)" }}>{t.tip}</div>
-                    </div>
-                  ))}
+              ):(
+                <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:24 }}>
+                  <div className="card">
+                    <div style={{ fontWeight:700, fontSize:15, marginBottom:16 }}>Recent Sales</div>
+                    <div style={{ color:"var(--muted)", fontFamily:"var(--font-mono)", fontSize:13, textAlign:"center", padding:"24px 0" }}>No sales yet — your first is on the way! 💪</div>
+                  </div>
+                  <div className="card">
+                    <div style={{ fontWeight:700, fontSize:15, marginBottom:16 }}>💡 Revenue Tips</div>
+                    {[{ tip:"Short windows (1–6h) increase urgency conversion by ~3×",color:"#f0c040" },{ tip:"Price gap of 2–3× base converts best for events",color:"#2ecc71" },{ tip:"Embed on checkout page, not product page, for +40% lift",color:"#ff9f0a" },{ tip:"Dark mode widgets outperform light on dark landing pages",color:"#a78bfa" }].map((t,i)=>(
+                      <div key={i} style={{ display:"flex", gap:10, padding:"8px 0", borderBottom:i<3?"1px solid var(--border)":"none" }}>
+                        <div style={{ width:4, borderRadius:2, background:t.color, flexShrink:0 }} />
+                        <div style={{ fontSize:13, color:"var(--muted)", lineHeight:1.5, fontFamily:"var(--font-mono)" }}>{t.tip}</div>
+                      </div>
+                    ))}
+                  </div>
                 </div>
-              </div>
+              )}
             </div>
           )}
 
           {tab==="widgets" && (
             <div className="fade-in" style={{ display:"grid", gap:12 }}>
-              {widgets.length===0&&(<div className="card" style={{ textAlign:"center", padding:48 }}><div style={{ fontSize:32, marginBottom:12 }}>◈</div><div style={{ fontWeight:700, fontSize:18, marginBottom:8 }}>No widgets yet</div><div style={{ color:"var(--muted)", marginBottom:20, fontFamily:"var(--font-mono)", fontSize:13 }}>Create your first urgency pricing widget</div><button className="btn btn-primary" onClick={()=>setShowBuilder(true)}>+ Create Widget</button></div>)}
+              {widgets.length===0&&(
+                <div className="card" style={{ textAlign:"center", padding:48 }}>
+                  <div style={{ fontSize:32, marginBottom:12 }}>◈</div>
+                  <div style={{ fontWeight:700, fontSize:18, marginBottom:8 }}>No widgets yet</div>
+                  <div style={{ color:"var(--muted)", marginBottom:20, fontFamily:"var(--font-mono)", fontSize:13 }}>Create your first urgency pricing widget</div>
+                  <button className="btn btn-primary" onClick={()=>setShowBuilder(true)}>+ Create Widget</button>
+                </div>
+              )}
               {widgets.map(w=>(<WidgetRow key={w.id} w={w} onEdit={w=>{setEditWidget(w);setShowBuilder(true);}} onDelete={deleteWidget} onPreview={setPreviewWidget} />))}
             </div>
           )}
@@ -309,30 +318,40 @@ export default function App() {
               <AnalyticsPanel widgets={widgets} />
               <div className="card">
                 <div style={{ fontWeight:700, fontSize:15, marginBottom:20 }}>Revenue by Widget</div>
-                {widgets.map(w=>{ const maxRev=Math.max(...widgets.map(x=>x.revenue)); const pct=maxRev?(w.revenue/maxRev)*100:0; return (
-                  <div key={w.id} style={{ marginBottom:16 }}>
-                    <div style={{ display:"flex", justifyContent:"space-between", marginBottom:6, fontSize:13 }}>
-                      <span style={{ fontFamily:"var(--font-head)", fontWeight:600 }}>{w.config.productName}</span>
-                      <span style={{ fontFamily:"var(--font-mono)", color:"var(--accent)" }}>{fmt(w.revenue)}</span>
+                {widgets.length===0?(
+                  <div style={{ color:"var(--muted)", fontFamily:"var(--font-mono)", fontSize:13, textAlign:"center", padding:"24px 0" }}>No data yet — create a widget to start tracking revenue.</div>
+                ):(
+                  widgets.map(w=>{ const maxRev=Math.max(...widgets.map(x=>x.revenue),1); const pct=(w.revenue/maxRev)*100; return (
+                    <div key={w.id} style={{ marginBottom:16 }}>
+                      <div style={{ display:"flex", justifyContent:"space-between", marginBottom:6, fontSize:13 }}>
+                        <span style={{ fontFamily:"var(--font-head)", fontWeight:600 }}>{w.config.productName}</span>
+                        <span style={{ fontFamily:"var(--font-mono)", color:"var(--accent)" }}>{fmt(w.revenue)}</span>
+                      </div>
+                      <div style={{ background:"var(--border)", borderRadius:4, height:8 }}>
+                        <div style={{ width:`${pct}%`, height:"100%", borderRadius:4, background:"linear-gradient(90deg,var(--accent),var(--accent2))", transition:"width .6s ease" }} />
+                      </div>
                     </div>
-                    <div style={{ background:"var(--border)", borderRadius:4, height:8 }}>
-                      <div style={{ width:`${pct}%`, height:"100%", borderRadius:4, background:"linear-gradient(90deg,var(--accent),var(--accent2))", transition:"width .6s ease" }} />
-                    </div>
-                  </div>
-                );})}
+                  );})
+                )}
               </div>
             </div>
           )}
 
           {tab==="pricing" && (
             <div className="fade-in" style={{ display:"grid", gridTemplateColumns:"1fr 1fr 1fr", gap:20 }}>
-              {[{ name:"Starter",price:"$29/mo",color:"#606880",features:["3 active widgets","Basic analytics","Email support","Embed on 1 domain"],cta:"Start Free Trial" },{ name:"Growth",price:"$79/mo",color:"var(--accent)",highlight:true,features:["Unlimited widgets","Advanced analytics","A/B testing","5 domains","Priority support"],cta:"Get Growth" },{ name:"Agency",price:"$199/mo",color:"var(--accent2)",features:["Everything in Growth","White-label widgets","API access","Unlimited domains","Custom branding"],cta:"Contact Sales" }].map(p=>(
+              {[
+                { name:"Starter",price:"$29/mo",color:"#606880",features:["3 active widgets","Basic analytics","Email support","Embed on 1 domain"],cta:"Start Free Trial", link:"#" },
+                { name:"Growth",price:"$79/mo",color:"var(--accent)",highlight:true,features:["Unlimited widgets","Advanced analytics","A/B testing","5 domains","Priority support"],cta:"Get Growth", link:"#" },
+                { name:"Agency",price:"$199/mo",color:"var(--accent2)",features:["Everything in Growth","White-label widgets","API access","Unlimited domains","Custom branding"],cta:"Contact Sales", link:"#" }
+              ].map(p=>(
                 <div key={p.name} className="card" style={{ border:p.highlight?`2px solid var(--accent)`:"1px solid var(--border)", position:"relative", padding:28 }}>
                   {p.highlight&&(<div style={{ position:"absolute", top:-12, left:"50%", transform:"translateX(-50%)", background:"var(--accent)", color:"#000", fontWeight:800, fontSize:11, padding:"3px 14px", borderRadius:20, whiteSpace:"nowrap", fontFamily:"var(--font-head)", textTransform:"uppercase" }}>Most Popular</div>)}
                   <div style={{ fontWeight:800, fontSize:18, color:p.color, marginBottom:4 }}>{p.name}</div>
                   <div style={{ fontSize:30, fontWeight:800, marginBottom:20, fontFamily:"var(--font-mono)" }}>{p.price}</div>
                   {p.features.map(f=>(<div key={f} style={{ display:"flex", gap:8, alignItems:"flex-start", marginBottom:10, fontSize:13, color:"var(--muted)", fontFamily:"var(--font-mono)" }}><span style={{ color:p.color }}>✓</span> {f}</div>))}
-                  <button className="btn btn-primary" style={{ width:"100%", justifyContent:"center", marginTop:20, background:p.color==="var(--accent)"?"var(--accent)":"var(--surface2)", color:p.color==="var(--accent)"?"#000":"var(--text)", border:`1px solid ${p.color}` }}>{p.cta}</button>
+                  <a href={p.link} style={{ textDecoration:"none" }}>
+                    <button className="btn btn-primary" style={{ width:"100%", justifyContent:"center", marginTop:20, background:p.color==="var(--accent)"?"var(--accent)":"var(--surface2)", color:p.color==="var(--accent)"?"#000":"var(--text)", border:`1px solid ${p.color}` }}>{p.cta}</button>
+                  </a>
                 </div>
               ))}
             </div>
